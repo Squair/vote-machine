@@ -41,7 +41,7 @@ namespace voting_machine
             var writeMethod = getWriteMethod();
             using (StreamWriter file = writeMethod(this.path))
             {
-                file.Write("({0}, {1})", voter_id, candidate_id);
+                file.WriteLine("({0}, {1})", voter_id, candidate_id);
             }
         }
     }
