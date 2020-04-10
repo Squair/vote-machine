@@ -54,7 +54,7 @@ namespace voting_machine
                 //If voter id already appeared, skip the vote count
                 if (knownVoterIds.Contains(vote.voter_id))
                 {
-                    Console.WriteLine("Fraud");
+                    Console.WriteLine("Voter with id {0} is fraudulant", vote.voter_id);
                     continue;
                 }
                 else //Add the voter to known voter ids
