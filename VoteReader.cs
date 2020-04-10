@@ -25,16 +25,21 @@ namespace voting_machine
             using (StreamReader file = File.OpenText(this.path))
             {
                 //Try match each indiviudal voting item
-                string pattern = @"(\(\d+,\s\d+\))";
+                string pattern = @"\((\d+),\s(\d+)\)";
                 var reg = new Regex(pattern, RegexOptions.Compiled);
                 //Loop while there are still lines in the file
                 string line;
                 while ((line = file.ReadLine()) != null)
                 {
                     //For each match, map it to vote DTO and add into vote list
-                    foreach (var match in reg.Matches(line))
+                    foreach (Match match in reg.Matches(line))
                     {
-                        votes.Add(mapVote(match.ToString()));
+                        //Map vote using the capturing groups in regular expression
+                        votes.Add(new Vote()
+                        {
+                            voter_id = Int32.Parse(match.Groups[1].ToString()),
+                            candidate_id = Int32.Parse(match.Groups[2].ToString()),
+                        });
                     }
                 }
             }
@@ -79,29 +84,11 @@ namespace voting_machine
         //Returns the top three candidates with the most votes. If there are less than three candidates, order them and just return
         public IEnumerable<KeyValuePair<int, int>> findTopThreeCandidates(Dictionary<int, int> candidateVotes)
         {
-            if (candidateVotes.Count < 3){
+            if (candidateVotes.Count < 3)
+            {
                 return candidateVotes.OrderByDescending(x => x.Value);
             }
             return candidateVotes.OrderByDescending(x => x.Value).Take(3);
-        }
-
-        //Map the vote in votes.txt to a Vote object
-        private Vote mapVote(string vote)
-        {
-            //Sanitise the string
-            vote = vote.Replace("(", "");
-            vote = vote.Replace(")", "");
-            vote = vote.Replace(" ", "");
-            
-            //Split voterId and Candidate id apart
-            var voteComponents = vote.Split(",");
-
-            //Map vote components onto Vote object
-            return new Vote()
-            {
-                voter_id = Int32.Parse(voteComponents[0]),
-                candidate_id = Int32.Parse(voteComponents[1]),
-            };
         }
     }
 }
