@@ -18,11 +18,16 @@ namespace voting_machine
 
             //Create driver data
             var rand = new Random();
-            var randCandidateId = rand.Next(1, 6);
-            for (var i = 0; i < 10; i++)
+            for (var i = 1; i < 50; i++)
             {
+                //5 Potential candidates
+                var randCandidateId = rand.Next(1, 6);
                 voteWriter.writeVote(i, randCandidateId);
             }
+
+            //Generate fraud data
+            voteWriter.writeVote(0, 0);
+            voteWriter.writeVote(0, 1);
 
             //Read votes into list
             var votes = voteReader.readVotes();
